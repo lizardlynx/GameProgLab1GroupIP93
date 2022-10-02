@@ -5,7 +5,6 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private Transform transform;
     private float screenHeight;
     private float screenWidth;
     public float speed = 20f;
@@ -16,27 +15,24 @@ public class Movement : MonoBehaviour
     {
         Debug.Log(grounded);
         rb = GetComponent<Rigidbody2D>();
-        transform = GetComponent<Transform>();
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {     
+        var axis = Input.GetAxis("Horizontal");
+        var velocity = rb.velocity;
+        velocity.x = axis * speed;
+        rb.velocity = velocity;
+
         if (grounded && (Input.GetKeyDown(KeyCode.Space)))
         {
             rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
-        }
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) {
-            var axis = Input.GetAxis("Horizontal");
-            var velocity = rb.velocity;
-            velocity.x = axis * speed;
-            rb.velocity = velocity;
         }
     }
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        Debug.Log("Here");
         if (other.gameObject.tag == "Ground")
         {
             grounded = true;
